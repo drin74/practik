@@ -1,0 +1,30 @@
+CREATE DATABASE IF NOT EXISTS avtoservis
+    CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE avtoservis;
+
+CREATE TABLE IF NOT EXISTS clients (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(150) NOT NULL,
+    phone VARCHAR(30) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS cars (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    client_id INT NOT NULL,
+    plate VARCHAR(20) NOT NULL UNIQUE,
+    brand VARCHAR(80) NOT NULL,
+    model VARCHAR(80) NOT NULL,
+    FOREIGN KEY (client_id) REFERENCES clients(id)
+        ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+CREATE TABLE IF NOT EXISTS orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    car_id INT NOT NULL,
+    work_description VARCHAR(255) NOT NULL,
+    cost DECIMAL(10,2) NOT NULL DEFAULT 0,
+    status ENUM('Новый', 'В работе', 'Выполнен', 'Отменен') NOT NULL DEFAULT 'Новый',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (car_id) REFERENCES cars(id)
+        ON UPDATE CASCADE ON DELETE RESTRICT
+);
